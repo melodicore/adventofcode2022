@@ -18,17 +18,40 @@ public class Solution extends SolutionBase {
 
     @Override
     protected String solution1(String input) {
-        return String.valueOf(input.lines().mapToInt(this::getResult).sum());
+        return String.valueOf(input
+                .lines()
+                .mapToInt(this::getResult1)
+                .sum());
     }
 
     @Override
     protected String solution2(String input) {
-        return "";
+        return String.valueOf(input
+                .lines()
+                .mapToInt(this::getResult2)
+                .sum());
     }
 
-    private int getResult(String s) {
+    private int getResult1(String s) {
         int i = player1.indexOf(s.charAt(0));
         int j = player2.indexOf(s.charAt(2));
+        if(i == j) {
+            return j + 4;
+        }
+        if((i + 1) % 3 == j) {
+            return j + 7;
+        }
+        return j + 1;
+    }
+
+    private int getResult2(String s) {
+        int i = player1.indexOf(s.charAt(0));
+        int j = switch(player2.indexOf(s.charAt(2))) {
+            case 0 -> (i + 2) % 3;
+            case 1 -> i;
+            case 2 -> (i + 1) % 3;
+            default -> -1;
+        };
         if(i == j) {
             return j + 4;
         }
