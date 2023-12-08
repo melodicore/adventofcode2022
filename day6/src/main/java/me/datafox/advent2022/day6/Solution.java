@@ -19,33 +19,24 @@ public class Solution extends SolutionBase {
 
     @Override
     protected String solution1(String input) {
-        int result = -1;
-        for(int i = 0; i < input.length() - 3; i++) {
-            Set<Character> set = new HashSet<>();
-            for(int j = i; j < i + 4; j++) {
-                set.add(input.charAt(j));
-            }
-            if(set.size() == 4) {
-                result = i + 4;
-                break;
-            }
-        }
-        return String.valueOf(result);
+        return String.valueOf(getFirstNDistinct(input, 4));
     }
 
     @Override
     protected String solution2(String input) {
-        int result = -1;
-        for(int i = 0; i < input.length() - 13; i++) {
+        return String.valueOf(getFirstNDistinct(input, 14));
+    }
+
+    private int getFirstNDistinct(String input, int n) {
+        for(int i = 0; i < input.length() - n - 1; i++) {
             Set<Character> set = new HashSet<>();
-            for(int j = i; j < i + 14; j++) {
+            for(int j = i; j < i + n; j++) {
                 set.add(input.charAt(j));
             }
-            if(set.size() == 14) {
-                result = i + 14;
-                break;
+            if(set.size() == n) {
+                return i + n;
             }
         }
-        return String.valueOf(result);
+        return -1;
     }
 }
