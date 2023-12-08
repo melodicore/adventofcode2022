@@ -3,6 +3,7 @@ package me.datafox.advent2022.day;
 import me.datafox.advent2022.SolutionBase;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
@@ -31,6 +32,17 @@ public class Solution extends SolutionBase {
 
     @Override
     protected String solution2(String input) {
-        return "";
+        return String.valueOf(Arrays.stream(
+                        input.split("\n\n"))
+                .map(s -> s
+                        .lines()
+                        .mapToInt(Integer::parseInt)
+                        .sum())
+                .sorted(Comparator.reverseOrder())
+                .toList()
+                .subList(0, 3)
+                .stream()
+                .mapToInt(Integer::intValue)
+                .sum());
     }
 }
