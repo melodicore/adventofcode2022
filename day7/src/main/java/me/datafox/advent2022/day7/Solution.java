@@ -30,11 +30,20 @@ public class Solution extends SolutionBase {
 
     @Override
     protected String solution2(String input) {
-        return "";
+        Dir root = getFilesystem(input);
+        List<Integer> list = new ArrayList<>();
+        traverseAndAdd(root, list);
+        int required = 30000000 - (70000000 - list.get(list.size() - 1));
+        return String.valueOf(list
+                .stream()
+                .mapToInt(Integer::intValue)
+                .filter(i -> i >= required)
+                .sorted()
+                .findFirst().orElse(-1));
     }
 
     private Dir getFilesystem(String input) {
-        Dir root = new Dir("", null);
+        Dir root = new Dir("/", null);
         Stack<Dir> stack = new Stack<>();
         for(String s : input.split("\n")) {
             String[] terms = s.split(" ");
@@ -80,13 +89,6 @@ public class Solution extends SolutionBase {
             this.name = name;
             this.parent = parent;
         }
-
-        @Override
-        public String toString() {
-            return "Node{" +
-                    "name='" + name + '\'' +
-                    '}';
-        }
     }
 
     private static class Dir extends Node {
@@ -96,14 +98,6 @@ public class Solution extends SolutionBase {
             super(name, parent);
             nodes = new HashMap<>();
         }
-
-        @Override
-        public String toString() {
-            return "Dir{" +
-                    "nodes=" + nodes +
-                    ", name='" + name + '\'' +
-                    '}';
-        }
     }
 
     private static class File extends Node {
@@ -112,14 +106,6 @@ public class Solution extends SolutionBase {
         public File(String name, int size, Dir parent) {
             super(name, parent);
             this.size = size;
-        }
-
-        @Override
-        public String toString() {
-            return "File{" +
-                    "size=" + size +
-                    ", name='" + name + '\'' +
-                    '}';
         }
     }
 }
