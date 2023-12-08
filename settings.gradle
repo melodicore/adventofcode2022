@@ -1,2 +1,3 @@
 rootProject.name = 'adventofcode2022'
 include 'template'
+include 'day1'
