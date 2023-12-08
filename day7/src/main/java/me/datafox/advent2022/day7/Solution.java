@@ -43,7 +43,7 @@ public class Solution extends SolutionBase {
     }
 
     private Dir getFilesystem(String input) {
-        Dir root = new Dir("/", null);
+        Dir root = new Dir();
         Stack<Dir> stack = new Stack<>();
         for(String s : input.split("\n")) {
             String[] terms = s.split(" ");
@@ -59,10 +59,9 @@ public class Solution extends SolutionBase {
                     }
                 }
             } else if(terms[0].equals("dir")) {
-                stack.peek().nodes.put(terms[1], new Dir(terms[1], stack.peek()));
+                stack.peek().nodes.put(terms[1], new Dir());
             } else {
-                stack.peek().nodes.put(terms[1], new File(terms[1],
-                        Integer.parseInt(terms[0]), stack.peek()));
+                stack.peek().nodes.put(terms[1], new File(Integer.parseInt(terms[0])));
             }
         }
         return root;
@@ -82,20 +81,12 @@ public class Solution extends SolutionBase {
     }
 
     private static class Node {
-        protected final String name;
-        protected final Dir parent;
-
-        public Node(String name, Dir parent) {
-            this.name = name;
-            this.parent = parent;
-        }
     }
 
     private static class Dir extends Node {
         private final Map<String,Node> nodes;
 
-        public Dir(String name, Dir parent) {
-            super(name, parent);
+        public Dir() {
             nodes = new HashMap<>();
         }
     }
@@ -103,8 +94,7 @@ public class Solution extends SolutionBase {
     private static class File extends Node {
         private final int size;
 
-        public File(String name, int size, Dir parent) {
-            super(name, parent);
+        public File(int size) {
             this.size = size;
         }
     }
