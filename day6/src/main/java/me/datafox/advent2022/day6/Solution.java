@@ -25,7 +25,6 @@ public class Solution extends SolutionBase {
             for(int j = i; j < i + 4; j++) {
                 set.add(input.charAt(j));
             }
-            System.out.println(set);
             if(set.size() == 4) {
                 result = i + 4;
                 break;
@@ -36,6 +35,17 @@ public class Solution extends SolutionBase {
 
     @Override
     protected String solution2(String input) {
-        return "";
+        int result = -1;
+        for(int i = 0; i < input.length() - 13; i++) {
+            Set<Character> set = new HashSet<>();
+            for(int j = i; j < i + 14; j++) {
+                set.add(input.charAt(j));
+            }
+            if(set.size() == 14) {
+                result = i + 14;
+                break;
+            }
+        }
+        return String.valueOf(result);
     }
 }
