@@ -1,11 +1,9 @@
-package me.datafox.advent2022.day;
+package me.datafox.advent2022.day1;
 
 import me.datafox.advent2022.SolutionBase;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.function.Function;
-import java.util.function.ToIntFunction;
 
 /**
  * Solution for advent of code 2022 day 1.
