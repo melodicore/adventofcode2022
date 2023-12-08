@@ -24,7 +24,10 @@ public class Solution extends SolutionBase {
 
     @Override
     protected String solution2(String input) {
-        return "";
+        return String.valueOf(input
+                .lines()
+                .filter(this::isAnyOverlap)
+                .count());
     }
 
     private boolean isFullOverlap(String s) {
@@ -36,5 +39,16 @@ public class Solution extends SolutionBase {
         int b1 = Integer.parseInt(b[0]);
         int b2 = Integer.parseInt(b[1]);
         return (a1 <= b1 && a2 >= b2) || (a1 >= b1 && a2 <= b2);
+    }
+
+    private boolean isAnyOverlap(String s) {
+        String[] parts = s.split(",");
+        String[] a = parts[0].split("-");
+        String[] b = parts[1].split("-");
+        int a1 = Integer.parseInt(a[0]);
+        int a2 = Integer.parseInt(a[1]);
+        int b1 = Integer.parseInt(b[0]);
+        int b2 = Integer.parseInt(b[1]);
+        return a1 <= b2 && b1 <= a2;
     }
 }
