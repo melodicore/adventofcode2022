@@ -2,6 +2,8 @@ package me.datafox.advent2022.day4;
 
 import me.datafox.advent2022.SolutionBase;
 
+import java.util.Arrays;
+
 /**
  * Solution for advent of code 2022 day 4.
  *
@@ -31,24 +33,17 @@ public class Solution extends SolutionBase {
     }
 
     private boolean isFullOverlap(String s) {
-        String[] parts = s.split(",");
-        String[] a = parts[0].split("-");
-        String[] b = parts[1].split("-");
-        int a1 = Integer.parseInt(a[0]);
-        int a2 = Integer.parseInt(a[1]);
-        int b1 = Integer.parseInt(b[0]);
-        int b2 = Integer.parseInt(b[1]);
-        return (a1 <= b1 && a2 >= b2) || (a1 >= b1 && a2 <= b2);
+        int[] arr = rangesToArray(s);
+        return (arr[0] <= arr[2] && arr[1] >= arr[3]) || (arr[0] >= arr[2] && arr[1] <= arr[3]);
     }
 
     private boolean isAnyOverlap(String s) {
-        String[] parts = s.split(",");
-        String[] a = parts[0].split("-");
-        String[] b = parts[1].split("-");
-        int a1 = Integer.parseInt(a[0]);
-        int a2 = Integer.parseInt(a[1]);
-        int b1 = Integer.parseInt(b[0]);
-        int b2 = Integer.parseInt(b[1]);
-        return a1 <= b2 && b1 <= a2;
+        int[] arr = rangesToArray(s);
+        return arr[0] <= arr[3] && arr[2] <= arr[1];
+    }
+
+    private int[] rangesToArray(String s) {
+        return Arrays.stream(s.split("[,-]"))
+                .mapToInt(Integer::parseInt).toArray();
     }
 }
