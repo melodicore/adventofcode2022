@@ -1,6 +1,6 @@
 apply plugin: "java-library"
 
-group = 'me.datafox.advent2023'
+group = 'me.datafox.advent2022'
 
 subprojects {
     apply plugin: "java"

@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group = 'me.datafox.advent2023'
+group = 'me.datafox.advent2022'
 version = '1.0-SNAPSHOT'
 
 dependencies {
