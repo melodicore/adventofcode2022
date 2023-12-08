@@ -30,12 +30,27 @@ public class Solution extends SolutionBase {
                 stacks.get(move[2]).push(stacks.get(move[1]).pop());
             }
         }
-        return stacks.stream().map(Stack::pop).map(String::valueOf).collect(Collectors.joining());
+        return stacks.stream()
+                .map(Stack::pop)
+                .map(String::valueOf)
+                .collect(Collectors.joining());
     }
 
     @Override
     protected String solution2(String input) {
-        return "";
+        List<Stack<Character>> stacks = getStacks(input.split("\n\n")[0]);
+        List<int[]> moves = getMoves(input.split("\n\n")[1]);
+        for(int[] move : moves) {
+            List<Character> temp = new ArrayList<>();
+            for(int i = 0; i < move[0]; i++) {
+                temp.add(0, stacks.get(move[1]).pop());
+            }
+            stacks.get(move[2]).addAll(temp);
+        }
+        return stacks.stream()
+                .map(Stack::pop)
+                .map(String::valueOf)
+                .collect(Collectors.joining());
     }
 
     private List<Stack<Character>> getStacks(String blocks) {
