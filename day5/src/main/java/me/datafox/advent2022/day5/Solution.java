@@ -3,10 +3,8 @@ package me.datafox.advent2022.day5;
 import me.datafox.advent2022.SolutionBase;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -63,14 +61,11 @@ public class Solution extends SolutionBase {
                 }
                 Stack<Character> stack = stacks.get(i++);
                 char c = s.charAt(j);
-                if(c == ' ') {
-                    continue;
-                } else if(Character.isDigit(c)) {
+                if(Character.isDigit(c)) {
                     break;
-                } else {
+                } else if(c != ' '){
                     stack.add(0, c);
                 }
-
             }
         }
         return stacks;
