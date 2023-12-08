@@ -1,0 +1,17 @@
+apply plugin: "java-library"
+
+group = 'me.datafox.advent2023'
+
+subprojects {
+    apply plugin: "java"
+    apply plugin: "application"
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    application {
+        mainClass = "me.datafox.advent.${getProject().getName()}.Solution"
+    }
+}
