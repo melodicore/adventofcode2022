@@ -31,6 +31,21 @@ public class Solution extends SolutionBase {
         return String.valueOf(visible);
     }
 
+    @Override
+    protected String solution2(String input) {
+        int[][] map = input
+                .lines()
+                .map(this::toIntArray)
+                .toArray(int[][]::new);
+        int max = 0;
+        for(int x = 0; x < map.length; x++) {
+            for(int y = 0; y < map[x].length; y++) {
+                max = Math.max(getScore(map, x, y), max);
+            }
+        }
+        return String.valueOf(max);
+    }
+
     private boolean isVisible(int[][] map, int x, int y) {
         for(int dir = 0; dir < 4; dir++) {
             if(isVisible(map, x, y, dir)) {
@@ -60,31 +75,28 @@ public class Solution extends SolutionBase {
         return larger;
     }
 
-    private int countVisible(int[][] map, boolean dir) {
-        int count = 0;
-        for(int x = 0; x < map.length; x++) {
-            int height = -1;
-            for(int y = 0; y < map[0].length; y++) {
-                int current = dir ? map[y][x] : map[x][y];
-                if(current > height) {
-                    height = current;
-                    count++;
-                }
-            }
+    private int getScore(int[][] map, int x, int y) {
+        int result = 1;
+        for(int dir = 0; dir < 4; dir++) {
+            result *= getScore(map, x, y, dir);
+            if(result == 0) return 0;
         }
-        return count;
+        return result;
     }
 
-    private int countVisibleReverse(int[][] map, boolean dir) {
+    private int getScore(int[][] map, int x, int y, int dir) {
+        boolean xy = (dir & 1) == 0;
+        boolean r = dir < 2;
+        int og = map[x][y];
         int count = 0;
-        for(int x = map.length - 1; x >= 0; x--) {
-            int height = -1;
-            for(int y = map[0].length - 1; y >= 0; y--) {
-                int current = dir ? map[y][x] : map[x][y];
-                if(current > height) {
-                    height = current;
-                    count++;
-                }
+        for(int i = xy ? x : y; r ? i < (xy ? map.length : map[x].length) : i >= 0; i += r ? 1 : -1) {
+            if(i == (xy ? x : y)) {
+                continue;
+            }
+            int current = xy ? map[i][y] : map[x][i];
+            count++;
+            if(current >= og) {
+                break;
             }
         }
         return count;
@@ -96,10 +108,5 @@ public class Solution extends SolutionBase {
             arr[i] = Integer.parseInt(s.substring(i, i + 1));
         }
         return arr;
-    }
-
-    @Override
-    protected String solution2(String input) {
-        return "";
     }
 }
