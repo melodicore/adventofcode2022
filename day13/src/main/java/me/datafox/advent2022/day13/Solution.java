@@ -135,24 +135,6 @@ public class Solution extends SolutionBase {
         public boolean isList() {
             return true;
         }
-
-        @Override
-        public boolean equals(Object o) {
-            if(this == o) return true;
-            if(o == null || getClass() != o.getClass()) return false;
-            ListNode listNode = (ListNode) o;
-            return Objects.equals(nodes, listNode.nodes);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(nodes);
-        }
-
-        @Override
-        public String toString() {
-            return nodes.toString();
-        }
     }
 
     private static class IntNode extends Node {
@@ -169,26 +151,8 @@ public class Solution extends SolutionBase {
         }
 
         @Override
-        public boolean equals(Object o) {
-            if(this == o) return true;
-            if(o == null || getClass() != o.getClass()) return false;
-            IntNode intNode = (IntNode) o;
-            return value == intNode.value;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(value);
-        }
-
-        @Override
         public boolean isList() {
             return false;
-        }
-
-        @Override
-        public String toString() {
-            return String.valueOf(value);
         }
     }
 }
