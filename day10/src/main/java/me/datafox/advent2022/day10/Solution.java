@@ -45,6 +45,33 @@ public class Solution extends SolutionBase {
 
     @Override
     protected String solution2(String input) {
-        return "";
+        int x = 1;
+        int cycles = 0;
+        Iterator<String> it = input.lines().iterator();
+        int add = 0;
+        boolean mid = false;
+        StringBuilder sb = new StringBuilder();
+        while(it.hasNext()) {
+            if(cycles % 40 == 0) {
+                sb.append("\n");
+            }
+            if(Math.abs((cycles % 40) - x) < 2) {
+                sb.append("#");
+            } else {
+                sb.append(".");
+            }
+            cycles++;
+            if(!mid) {
+                String op = it.next();
+                if(op.startsWith("addx")) {
+                    mid = true;
+                    add = Integer.parseInt(op.split(" ")[1]);
+                }
+            } else {
+                mid = false;
+                x += add;
+            }
+        }
+        return sb.toString();
     }
 }
