@@ -2,6 +2,7 @@ package me.datafox.advent2022.day9;
 
 import me.datafox.advent2022.SolutionBase;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,7 +40,26 @@ public class Solution extends SolutionBase {
 
     @Override
     protected String solution2(String input) {
-        return "";
+        Coord head = new Coord(0, 0);
+        Coord[] tails = new Coord[9];
+        Arrays.fill(tails, head);
+        Set<Coord> visited = new HashSet<>();
+        for(String s : input.split("\n")) {
+            for(int i = 0; i < Integer.parseInt(s.split(" ")[1]); i++) {
+                switch(s.charAt(0)) {
+                    case 'U' -> head = head.move(0, 1);
+                    case 'D' -> head = head.move(0, -1);
+                    case 'R' -> head = head.move(1, 0);
+                    case 'L' -> head = head.move(-1, 0);
+                }
+                tails[0] = moveTail(head, tails[0]);
+                for(int j = 1; j < tails.length; j++) {
+                    tails[j] = moveTail(tails[j - 1], tails[j]);
+                }
+                visited.add(tails[8]);
+            }
+        }
+        return String.valueOf(visited.size());
     }
 
     private Coord moveTail(Coord head, Coord tail) {
