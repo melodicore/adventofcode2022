@@ -2,7 +2,9 @@ package me.datafox.advent2022.day11;
 
 import me.datafox.advent2022.SolutionBase;
 
-import java.util.*;
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -27,13 +29,13 @@ public class Solution extends SolutionBase {
         int[] inspections = new int[monkeys.length];
         for(int i = 0; i < 20; i++) {
             for(int j = 0; j < monkeys.length; j++) {
-                LinkedList<Integer> items = monkeys[j].items;
+                LinkedList<BigInteger> items = monkeys[j].items;
                 while(!items.isEmpty()) {
                     inspections[j]++;
-                    int item = items.removeFirst();
+                    BigInteger item = items.removeFirst();
                     item = monkeys[j].operation.apply(item);
-                    item /= 3;
-                    if(item % monkeys[j].test == 0) {
+                    item = item.divide(BigInteger.valueOf(3));
+                    if(item.mod(monkeys[j].test).compareTo(BigInteger.ZERO) == 0) {
                         monkeys[monkeys[j].ifTrue].items.add(item);
                     } else {
                         monkeys[monkeys[j].ifFalse].items.add(item);
@@ -47,42 +49,69 @@ public class Solution extends SolutionBase {
 
     @Override
     protected String solution2(String input) {
-        return "";
+        Monkey[] monkeys = Arrays
+                .stream(input.split("\n\n"))
+                .map(this::getMonkey)
+                .toArray(Monkey[]::new);
+        long[] inspections = new long[monkeys.length];
+        BigInteger max = Arrays
+                .stream(monkeys)
+                .map(Monkey::test)
+                .reduce(BigInteger::multiply)
+                .orElse(BigInteger.ONE);
+        for(int i = 0; i < 10000; i++) {
+            for(int j = 0; j < monkeys.length; j++) {
+                LinkedList<BigInteger> items = monkeys[j].items;
+                while(!items.isEmpty()) {
+                    inspections[j]++;
+                    BigInteger item = items.removeFirst().mod(max);
+                    item = monkeys[j].operation.apply(item);
+                    if(item.mod(monkeys[j].test).compareTo(BigInteger.ZERO) == 0) {
+                        monkeys[monkeys[j].ifTrue].items.add(item);
+                    } else {
+                        monkeys[monkeys[j].ifFalse].items.add(item);
+                    }
+                }
+            }
+        }
+        Arrays.sort(inspections);
+        return String.valueOf(inspections[inspections.length - 1] * inspections[inspections.length - 2]);
     }
 
     private Monkey getMonkey(String s) {
         String[] split = s.split("\n");
         return new Monkey(Arrays
                 .stream(split[1].substring(18).split(", "))
-                .map(Integer::parseInt).collect(Collectors.toCollection(LinkedList::new)),
+                .map(BigInteger::new)
+                .collect(Collectors.toCollection(LinkedList::new)),
                 getOperation(split[2].substring(19)),
-                Integer.parseInt(split[3].substring(21)),
+                new BigInteger(split[3].substring(21)),
                 Integer.parseInt(split[4].substring(29)),
                 Integer.parseInt(split[5].substring(30)));
     }
 
-    private Function<Integer,Integer> getOperation(String s) {
+    private Function<BigInteger,BigInteger> getOperation(String s) {
         String[] split = s.split(" ");
         return old -> {
-            int a, b;
+            BigInteger a, b;
             if(split[0].equals("old")) {
                 a = old;
             } else {
-                a = Integer.parseInt(split[0]);
+                a = new BigInteger(split[0]);
             }
             if(split[2].equals("old")) {
                 b = old;
             } else {
-                b = Integer.parseInt(split[2]);
+                b = new BigInteger(split[2]);
             }
             if(split[1].equals("+")) {
-                return a + b;
+                return a.add(b);
             } else {
-                return a * b;
+                return a.multiply(b);
             }
         };
     }
 
-    private record Monkey(LinkedList<Integer> items, Function<Integer,Integer> operation, int test, int ifTrue, int ifFalse) {
+    private record Monkey(LinkedList<BigInteger> items, Function<BigInteger,BigInteger> operation, BigInteger test, int ifTrue, int ifFalse) {
     }
 }
