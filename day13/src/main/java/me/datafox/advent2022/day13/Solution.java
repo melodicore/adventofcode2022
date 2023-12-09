@@ -2,10 +2,9 @@ package me.datafox.advent2022.day13;
 
 import me.datafox.advent2022.SolutionBase;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Solution for advent of code 2022 day 13.
@@ -21,23 +20,35 @@ public class Solution extends SolutionBase {
 
     @Override
     protected String solution1(String input) {
-        List<Tuple<Node,Node>> nodes = Arrays
+        List<Tuple<ListNode,ListNode>> nodes = Arrays
                 .stream(input.split("\n\n"))
                 .map(this::toNodes)
                 .toList();
         int result = 0;
         for(int i = 0; i < nodes.size(); i++) {
-            Tuple<Node,Node> tuple = nodes.get(i);
-            ListNode left = (ListNode) tuple.t1;
-            ListNode right = (ListNode) tuple.t2;
-            if(compareListNodes(left, right) < 1) {
+            Tuple<ListNode,ListNode> tuple = nodes.get(i);
+            if(compareListNodes(tuple.t1, tuple.t2) < 1) {
                 result += i + 1;
             }
         }
         return String.valueOf(result);
     }
 
-    private Tuple<Node,Node> toNodes(String s) {
+    @Override
+    protected String solution2(String input) {
+        input = "[[2]]\n[[6]]\n\n" + input;
+        List<ListNode> nodes = Arrays
+                .stream(input.split("\n\n"))
+                .map(this::toNodes)
+                .flatMap(this::flatMapTuple)
+                .collect(Collectors.toCollection(ArrayList::new));
+        ListNode start = nodes.get(0);
+        ListNode end = nodes.get(1);
+        nodes.sort(this::compareListNodes);
+        return String.valueOf((nodes.indexOf(start) + 1) * (nodes.indexOf(end) + 1));
+    }
+
+    private Tuple<ListNode,ListNode> toNodes(String s) {
         String[] split = s.split("\n");
         return new Tuple<>(toNode(split[0]), toNode(split[1]));
     }
@@ -75,7 +86,7 @@ public class Solution extends SolutionBase {
         return 0;
     }
 
-    private Node toNode(String s) {
+    private ListNode toNode(String s) {
         Stack<ListNode> stack = new Stack<>();
         stack.add(new ListNode());
         s = s.substring(1, s.length() - 1);
@@ -103,9 +114,8 @@ public class Solution extends SolutionBase {
         return stack.peek();
     }
 
-    @Override
-    protected String solution2(String input) {
-        return "";
+    private Stream<ListNode> flatMapTuple(Tuple<ListNode,ListNode> t) {
+        return Stream.of(t.t1, t.t2);
     }
 
     private record Tuple<T1,T2>(T1 t1, T2 t2) {}
@@ -127,6 +137,19 @@ public class Solution extends SolutionBase {
         }
 
         @Override
+        public boolean equals(Object o) {
+            if(this == o) return true;
+            if(o == null || getClass() != o.getClass()) return false;
+            ListNode listNode = (ListNode) o;
+            return Objects.equals(nodes, listNode.nodes);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(nodes);
+        }
+
+        @Override
         public String toString() {
             return nodes.toString();
         }
@@ -143,6 +166,19 @@ public class Solution extends SolutionBase {
             ListNode node = new ListNode();
             node.nodes.add(this);
             return node;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if(this == o) return true;
+            if(o == null || getClass() != o.getClass()) return false;
+            IntNode intNode = (IntNode) o;
+            return value == intNode.value;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(value);
         }
 
         @Override
