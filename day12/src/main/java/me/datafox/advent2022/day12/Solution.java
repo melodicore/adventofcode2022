@@ -44,12 +44,34 @@ public class Solution extends SolutionBase {
         visited.add(start);
         routes.add(new Route(start));
         Route result = getResultRoute(map, visited, routes, end);
+        //noinspection DataFlowIssue
         return String.valueOf(result.visited.size() - 1);
     }
 
     @Override
     protected String solution2(String input) {
-        return "";
+        char[][] map = input.lines().map(String::toCharArray).toArray(char[][]::new);
+        List<Coord> starts = new ArrayList<>();
+        Coord end = null;
+        for(int y = 0; y < map.length; y++) {
+            for(int x = 0; x < map[y].length; x++) {
+                char c = map[y][x];
+                if(c == 'S') {
+                    starts.add(new Coord(x, y));
+                    map[y][x] = 'a';
+                } else if(c == 'E') {
+                    end = new Coord(x, y);
+                    map[y][x] = 'z';
+                } else if(c == 'a') {
+                    starts.add(new Coord(x, y));
+                }
+            }
+        }
+        Set<Coord> visited = new HashSet<>(starts);
+        Set<Route> routes = new HashSet<>(starts.stream().map(Route::new).toList());
+        Route result = getResultRoute(map, visited, routes, end);
+        //noinspection DataFlowIssue
+        return String.valueOf(result.visited.size() - 1);
     }
 
     private Route getResultRoute(char[][] map, Set<Coord> visited, Set<Route> routes, Coord end) {
