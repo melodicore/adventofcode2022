@@ -33,6 +33,21 @@ public class Solution extends SolutionBase {
         return String.valueOf(counter);
     }
 
+    @Override
+    protected String solution2(String input) {
+        Set<Block> universe = input
+                .lines()
+                .flatMap(this::getBlocks)
+                .collect(Collectors.toSet());
+        int floor = universe.stream().mapToInt(Block::y).max().orElse(-3) + 2;
+        Block pour = new Block(500, 0);
+        int counter = 0;
+        while(canPour(universe, pour, floor)) {
+            counter++;
+        }
+        return String.valueOf(counter + 1);
+    }
+
     private Stream<Block> getBlocks(String s) {
         String[] split = s.split(" -> ");
         Block block = null;
@@ -80,7 +95,7 @@ public class Solution extends SolutionBase {
         Block next = pour;
         do {
             last = next;
-            next = drop(last, universe);
+            next = drop(last, universe, maxy + 2);
             if(next.y > maxy) {
                 return false;
             }
@@ -89,8 +104,23 @@ public class Solution extends SolutionBase {
         return true;
     }
 
-    private Block drop(Block block, Set<Block> universe) {
+    private boolean canPour(Set<Block> universe, Block pour, int floor) {
+        Block last;
+        Block next = pour;
+        do {
+            last = next;
+            next = drop(last, universe, floor);
+            if(next == pour) return false;
+        } while(!last.equals(next));
+        universe.add(next);
+        return true;
+    }
+
+    private Block drop(Block block, Set<Block> universe, int floor) {
         Block next = block.add(0, 1);
+        if(next.y == floor) {
+            return block;
+        }
         if(!universe.contains(next)) {
             return next;
         }
@@ -103,11 +133,6 @@ public class Solution extends SolutionBase {
             return next;
         }
         return block;
-    }
-
-    @Override
-    protected String solution2(String input) {
-        return "";
     }
 
     private record Block(int x, int y) {
