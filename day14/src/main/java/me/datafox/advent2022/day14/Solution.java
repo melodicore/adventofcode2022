@@ -117,18 +117,18 @@ public class Solution extends SolutionBase {
     }
 
     private Block drop(Block block, Set<Block> universe, int floor) {
-        Block next = block.add(0, 1);
+        Block next = block.drop(0);
         if(next.y == floor) {
             return block;
         }
         if(!universe.contains(next)) {
             return next;
         }
-        next = block.add(-1, 1);
+        next = block.drop(-1);
         if(!universe.contains(next)) {
             return next;
         }
-        next = block.add(1, 1);
+        next = block.drop(1);
         if(!universe.contains(next)) {
             return next;
         }
@@ -136,8 +136,8 @@ public class Solution extends SolutionBase {
     }
 
     private record Block(int x, int y) {
-        private Block add(int x, int y) {
-            return new Block(this.x + x, this.y + y);
+        private Block drop(int x) {
+            return new Block(this.x + x, this.y + 1);
         }
     }
 }
