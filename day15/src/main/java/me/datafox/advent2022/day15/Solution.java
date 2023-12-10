@@ -32,6 +32,15 @@ public class Solution extends SolutionBase {
         return String.valueOf(getKnownForY(sensors, y, beaconsInY));
     }
 
+    @Override
+    protected String solution2(String input) {
+        Set<Sensor> sensors = input
+                .lines()
+                .map(this::getSensor)
+                .collect(Collectors.toSet());
+        return String.valueOf(getEmptyPosition(sensors, 0, 4000000));
+    }
+
     private Sensor getSensor(String s) {
         String[] split = s.substring(12).split("[,=:]");
         int x = Integer.parseInt(split[0].strip());
@@ -61,9 +70,22 @@ public class Solution extends SolutionBase {
         return counter;
     }
 
-    @Override
-    protected String solution2(String input) {
-        return "";
+    @SuppressWarnings("SameParameterValue")
+    private long getEmptyPosition(Set<Sensor> sensors, int min, int max) {
+        for(int[] y = {min}; y[0] <= max; y[0]++) {
+            for(int[] x = {min}; x[0] <= max; x[0]++) {
+                Set<Sensor> inRange = sensors
+                        .stream()
+                        .filter(s -> s.covers(x[0], y[0]))
+                        .collect(Collectors.toSet());
+                if(inRange.isEmpty()) {
+                    return (long) x[0] * 4000000L + y[0];
+                } else {
+                    x[0] = inRange.stream().mapToInt(s -> s.lastCover(y[0])).max().orElse(max);
+                }
+            }
+        }
+        return -1;
     }
 
     private record Sensor(int x, int y, int range) {
@@ -76,6 +98,10 @@ public class Solution extends SolutionBase {
 
         public boolean covers(int x, int y) {
             return Math.abs(this.x - x) + Math.abs(this.y - y) <= range;
+        }
+
+        public int lastCover(int y) {
+            return this.x + (range - Math.abs(this.y - y));
         }
     }
 }
