@@ -3,7 +3,9 @@ package me.datafox.advent2022.day17;
 import me.datafox.advent2022.SolutionBase;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Solution for advent of code 2022 day 17.
@@ -44,6 +46,42 @@ public class Solution extends SolutionBase {
             dropBlock(world, i, counter, input.toCharArray());
         }
         return String.valueOf(world.size());
+    }
+
+    @Override
+    protected String solution2(String input) {
+        List<boolean[]> world = new ArrayList<>();
+        int[] counter = { 0 };
+        Set<String> repeats = new HashSet<>();
+        int fi = -1;
+        int fs = -1;
+        int si = -1;
+        int ss = -1;
+        for(int i = 0; i < 10000; i++) {
+            dropBlock(world, i, counter, input.toCharArray());
+            String s = (i % blocks.length) + ", " + (counter[0] % input.length());
+            if(repeats.contains(s)) {
+                if(fi == -1) {
+                    fi = i;
+                    fs = world.size();
+                    repeats.clear();
+                } else {
+                    si = i;
+                    ss = world.size();
+                    break;
+                }
+            }
+            repeats.add(s);
+        }
+        int iteration = si - fi;
+        int rowsPerIteration = ss - fs;
+        long rowsAfterLoop = 1000000000000L - fi;
+        long iterations = (rowsAfterLoop / iteration);
+        int remainingIterations = (int) (rowsAfterLoop % iteration);
+        for(int i = si + 1; i < si + remainingIterations; i++) {
+            dropBlock(world, i, counter, input.toCharArray());
+        }
+        return String.valueOf(fs + (iterations * rowsPerIteration) + world.size() - ss);
     }
 
     private void dropBlock(List<boolean[]> world, int i, int[] counter, char[] directions) {
@@ -102,10 +140,5 @@ public class Solution extends SolutionBase {
                 world.add(slice);
             }
         }
-    }
-
-    @Override
-    protected String solution2(String input) {
-        return "";
     }
 }
