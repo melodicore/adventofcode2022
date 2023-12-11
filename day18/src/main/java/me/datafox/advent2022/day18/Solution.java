@@ -2,7 +2,7 @@ package me.datafox.advent2022.day18;
 
 import me.datafox.advent2022.SolutionBase;
 
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -42,7 +42,41 @@ public class Solution extends SolutionBase {
 
     @Override
     protected String solution2(String input) {
-        return "";
+        Set<Coord> cubes = input.lines().map(this::getCoord).collect(Collectors.toSet());
+        int sx = cubes.stream().mapToInt(Coord::x).min().orElse(-1) - 1;
+        int ex = cubes.stream().mapToInt(Coord::x).max().orElse(-1) + 1;
+        int sy = cubes.stream().mapToInt(Coord::y).min().orElse(-1) - 1;
+        int ey = cubes.stream().mapToInt(Coord::y).max().orElse(-1) + 1;
+        int sz = cubes.stream().mapToInt(Coord::z).min().orElse(-1) - 1;
+        int ez = cubes.stream().mapToInt(Coord::z).max().orElse(-1) + 1;
+        Set<Coord> outside = new HashSet<>();
+        Set<Coord> remaining = new HashSet<>(Set.of(new Coord(sx, sy, sz)));
+        while(!remaining.isEmpty()) {
+            for(Coord air : new ArrayList<>(remaining)) {
+                for(Coord coord : adjacent) {
+                    Coord c = air.add(coord);
+                    if(c.x >= sx && c.x <= ex &&
+                            c.y >= sy && c.y <= ey &&
+                            c.z >= sz && c.z <= ez &&
+                            !cubes.contains(c) &&
+                            !outside.contains(c)) {
+                        outside.add(c);
+                        remaining.add(c);
+                    }
+                }
+                remaining.remove(air);
+            }
+        }
+        int sides = 0;
+        for(Coord cube : cubes) {
+            for(Coord coord : adjacent) {
+                Coord c = cube.add(coord);
+                if(!cubes.contains(c) && outside.contains(c)) {
+                    sides++;
+                }
+            }
+        }
+        return String.valueOf(sides);
     }
 
     private Coord getCoord(String s) {
